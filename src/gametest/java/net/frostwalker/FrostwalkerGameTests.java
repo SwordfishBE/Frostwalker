@@ -21,6 +21,28 @@ import net.minecraft.world.level.block.PowderSnowBlock;
 public class FrostwalkerGameTests {
     private static final BlockPos WATER = new BlockPos(2, 1, 2);
 
+    @GameTest
+    public void minecraftVersionRangeUsesLoaderNormalization(GameTestHelper h) throws Exception {
+        var dependency = net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer("frostwalker")
+                .orElseThrow().getMetadata().getDepends().stream()
+                .filter(dep -> dep.getModId().equals("minecraft")).findFirst().orElseThrow();
+        for (String id : List.of("26.4-snapshot-6", "26.4-snapshot-7", "26.4-snapshot-10",
+                "26.4-pre-1", "26.4-rc-1", "26.4")) {
+            h.assertTrue(dependency.matches(normalizedVersion(id)), "Must accept " + id);
+        }
+        for (String id : List.of("26.3", "26.4-snapshot-1", "26.4-snapshot-5",
+                "26.4.1-pre-1", "26.4.1", "26.5-snapshot-1", "26.5", "27.1")) {
+            h.assertFalse(dependency.matches(normalizedVersion(id)), "Must reject " + id);
+        }
+        h.succeed();
+    }
+
+    private net.fabricmc.loader.api.Version normalizedVersion(String id) throws Exception {
+        return net.fabricmc.loader.api.Version.parse(
+                net.fabricmc.loader.impl.game.minecraft.McVersionLookup.normalizeVersion(id,
+                        net.fabricmc.loader.impl.game.minecraft.McVersionLookup.getRelease(id)));
+    }
+
     private ItemStack boots(GameTestHelper h, int level) {
         var stack = new ItemStack(Items.DIAMOND_BOOTS);
         stack.enchant(h.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT)

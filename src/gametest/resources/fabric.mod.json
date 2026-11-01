@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "frostwalker-test",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Frostwalker Tests",
   "environment": "*",
   "entrypoints": { "fabric-gametest": ["net.frostwalker.FrostwalkerGameTests"] }
