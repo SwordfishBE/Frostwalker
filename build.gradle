@@ -39,3 +39,4 @@ jar {
     from('LICENSE-upstream')
 }
 tasks.named('check') { dependsOn 'runGameTest' }
+

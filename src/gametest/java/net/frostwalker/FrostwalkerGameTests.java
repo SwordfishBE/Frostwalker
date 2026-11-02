@@ -22,6 +22,17 @@ public class FrostwalkerGameTests {
     private static final BlockPos WATER = new BlockPos(2, 1, 2);
 
     @GameTest
+    public void loadsOnClientAndDedicatedServer(GameTestHelper h) {
+        var metadata = net.fabricmc.loader.api.FabricLoader.getInstance()
+                .getModContainer("frostwalker").orElseThrow().getMetadata();
+        h.assertTrue(metadata.getEnvironment().matches(net.fabricmc.api.EnvType.CLIENT),
+                "Must load on the client so singleplayer can initialize the mod");
+        h.assertTrue(metadata.getEnvironment().matches(net.fabricmc.api.EnvType.SERVER),
+                "Must continue to load on dedicated servers");
+        h.succeed();
+    }
+
+    @GameTest
     public void minecraftVersionRangeUsesLoaderNormalization(GameTestHelper h) throws Exception {
         var dependency = net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer("frostwalker")
                 .orElseThrow().getMetadata().getDepends().stream()
