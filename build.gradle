@@ -36,7 +36,6 @@ fabricApi {
 jar {
     from('LICENSE') { rename { 'LICENSE_frostwalker' } }
     from('NOTICE')
-    from('LICENSE-upstream')
 }
 tasks.named('check') { dependsOn 'runGameTest' }
 
